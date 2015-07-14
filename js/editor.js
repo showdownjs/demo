@@ -12,6 +12,7 @@ app.config(['$showdownProvider', function ($showdownProvider) {
   $showdownProvider.setOption('parseImgDimensions',        true);
   $showdownProvider.setOption('parseImgDimensions',        true);
   $showdownProvider.setOption('headerLevelStart',          3);
+  $showdownProvider.setOption('smoothLivePreview',         true);
 }]);
 
 app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $showdown, $http) {
