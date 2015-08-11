@@ -5,6 +5,7 @@
   <title>Showdown Live Editor</title>
 
   <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.2/css/foundation.min.css">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -29,10 +30,9 @@
 
 </head>
 <body ng-app="showdown.editor" ng-controller="editorCtrl" squeeze>
-  <nav class="top-bar" role="navigation">
-    <a class="bars-lnk" ng-click="toggleMenu()"><i class="fa fa-fw fa-lg fa-bars"></i></a>
-    <a><img id="logo" src="img/editor.logo.white.png"></a>
-  </nav>
+
+  <nav class="top-bar" data-topbar role="navigation" ng-include="'partials/nav.html'"></nav>
+
   <div id="editor-wrapper" class="container">
     <textarea id="editor" data-ng-model="text"></textarea>
     <div id="preview" sd-model-to-html="text"></div>
@@ -51,8 +51,23 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-sanitize.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.js"></script>
 <script src="//rawgit.com/showdownjs/ng-showdown/master/dist/ng-showdown.js"></script>
 <script src="//cdn.rawgit.com/dpiccone/ng-pageslide/v1.0.4/dist/angular-pageslide-directive.js"></script>
 <script src="js/editor.js"></script>
+
+<!-- modal -->
+  <div ng-hide="!showModal" class="modal-wrapper ng-hide">
+    <div class="modal-inner" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+      <div class="modal-topbar">
+        <a class="modal-close-btn" aria-label="Close" ng-click="showModal = false"><i class="fa fa-lg fa-close"></i></a>
+      </div>
+      <div class="link-area">
+        <textarea disabled style="resize: none;">{{hashTxt}}</textarea>
+      </div>
+    </div>
+  </div>
+<!-- end modal -->
+
 </body>
 </html>

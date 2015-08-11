@@ -1,11 +1,10 @@
-var app = angular.module('showdown.editor', ['ng-showdown', 'pageslide-directive', 'ngAnimate']);
+var app = angular.module('showdown.editor', ['ng-showdown', 'pageslide-directive', 'ngAnimate', 'ngRoute']);
 
 app.config([function () {
 
 }]);
 
 app.directive('squeeze', ['$animate', function($animate){
-
   return {
     link: function(scope, element, attrs) {
       scope.$watch('checked', function(newValue) {
@@ -21,36 +20,18 @@ app.directive('squeeze', ['$animate', function($animate){
       });
     }
   };
-
-  /*
-  return function(scope, element, attrs) {
-    var width = (scope.checked) ? $window.innerWidth - 300 : $window.innerWidth;
-    width += 'px';
-    var body = angular.element(document.body);
-    document.body.style.width = width;
-    console.log(scope);
-     if (scope.checked) {
-     $animate.addClass(element, 'squeezed-body');
-     } else {
-     $animate.removeClass(element, 'squeezed-body')
-     }
-  };
-  */
 }]);
 
 
 app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $showdown, $http) {
+
+  var hack = true;
+
+  $scope.showModal = false;
+  $scope.hashTxt = '';
   $scope.checked = false;
   $scope.firstLoad = true;
-
-  $scope.toggleMenu = function () {
-    $scope.firstLoad = false;
-    $scope.checked = !$scope.checked;
-  };
-
   $scope.text = '';
-
-  /** options **/
   $scope.checkOpts = [
     { name: 'omitExtraWLInCodeBlocks', value: true },
     { name: 'noHeaderId',              value: false },
@@ -68,7 +49,20 @@ app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $
   $scope.valOpts = [
     { name: 'headerLevelStart', value: 3 }
   ];
-  /** end options **/
+
+  $scope.toggleMenu = function () {
+    $scope.firstLoad = false;
+    $scope.checked = !$scope.checked;
+  };
+
+  $scope.getHash = function() {
+    $scope.hashTxt = document.location.origin + document.location.pathname + '#/' + encodeURIComponent($scope.text);
+    $scope.showModal = true;
+  };
+
+  $scope.closeModal = function () {
+    $scope.showModal = false;
+  };
 
   $scope.updateOptions = function () {
     for ( var i = 0; i < $scope.checkOpts.length; ++i) {
@@ -79,21 +73,36 @@ app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $
       $showdown.setOption($scope.valOpts[i].name, $scope.valOpts[i].value);
     }
 
-    // trigger a showdown reload
-    $scope.text = $scope.text + '&';
-    $scope.text.replace(/&$/, '');
+    // trigger text repaint (hackish way)
+    $scope.text = $scope.text.replace(/\u200B/, '');
+    if (hack) {
+      $scope.text = '\u200B' + $scope.text;
+    } else {
+      $scope.text = $scope.text + '\u200B';
+    }
 
+    hack = !hack;
   };
+
 
   $scope.updateOptions();
 
-  $http.get('md/text.md')
-    .success(function(data) {
-      $scope.text = data;
-    })
-    .error(function() {
-      $scope.text =  "Request failed";
-    });
-
-
+  // get text from URL or load the default text
+  if(window.location.hash) {
+    var hashText = window.location.hash.replace(/^#(\/)?/, '');
+    hashText = decodeURIComponent(hashText);
+    $scope.text = hashText;
+  } else {
+    $http.get('md/text.md')
+      .success(function(data) {
+        $scope.text = data;
+      })
+      .error(function() {
+        $scope.text =  '';
+      });
+  }
 }]);
+
+app.controller('getHashModalCtrl', function($scope) {
+
+});
