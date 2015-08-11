@@ -23,7 +23,7 @@ app.directive('squeeze', ['$animate', function($animate){
 }]);
 
 
-app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $showdown, $http) {
+app.controller('editorCtrl', ['$scope', '$showdown', '$http', '$sanitize', function($scope, $showdown, $http, $sanitize) {
 
   var hack = true;
 
@@ -84,7 +84,6 @@ app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $
     hack = !hack;
   };
 
-
   $scope.updateOptions();
 
   // get text from URL or load the default text
@@ -102,7 +101,3 @@ app.controller('editorCtrl', ['$scope', '$showdown', '$http', function($scope, $
       });
   }
 }]);
-
-app.controller('getHashModalCtrl', function($scope) {
-
-});
