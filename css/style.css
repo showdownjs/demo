@@ -6,6 +6,42 @@ body {
     padding: 0;
 }
 
+html {
+    overflow-x: hidden;
+}
+
+@keyframes squeezeBody {
+    from { width: 100%; }
+    to { width: calc(100% - 300px); }
+}
+
+@-webkit-keyframes squeezeBody {
+    from { width: 100%; }
+    to { width: calc(100% - 300px); }
+}
+
+@keyframes stretchBody {
+    from { width: calc(100% - 300px); }
+    to { width: 100%; }
+}
+
+@-webkit-keyframes stretchBody {
+    from { width: calc(100% - 300px); }
+    to { width: 100%; }
+}
+
+.squeezed-body {
+    animation: squeezeBody 0.5s ease;
+    -webkit-animation: squeezeBody 0.5s ease;
+    width: calc(100% - 300px);
+}
+
+.full-body {
+    animation: stretchBody 0.5s ease;
+    -webkit-animation: stretchBody 0.5s ease;
+    width: 100%;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Old Standard TT', serif;
     font-weight: bold;
@@ -26,11 +62,46 @@ h3 {
     top: 0;
     right: 0;
     left: 0;
+    padding-top: 2px;
 }
 
 #logo {
     width: 280px;
 }
+
+.bars-lnk {
+    color: #fff;
+}
+
+.bars-lnk {
+    color: #fff;
+}
+
+.lateral-menu {
+    background-color: #333;
+    color: #fff;
+    width: 300px;
+}
+
+.lateral-menu-content {
+    padding-left: 10px;
+    height: 100%;
+}
+
+.lateral-menu-content .title{
+    padding-top: 1px;
+    font-size: 1.5em;
+    height: 45px;
+}
+
+.lateral-menu-content-inner {
+    overflow-y: auto;
+    height: 100%;
+    padding-top: 10px;
+    font-size: 0.9em;
+}
+
+
 
 .container {
     display: flex;
@@ -86,3 +157,5 @@ pre code {
     border: 0;
     padding: 0;
 }
+
+
