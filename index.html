@@ -44,6 +44,16 @@
         <div ng-repeat="opt in checkOpts">
           <input ng-click="updateOptions()" type="checkbox" ng-model="opt.value" />&nbsp;&nbsp;{{opt.name}}<br />
         </div>
+        <div ng-repeat="opt in valOpts">
+          <div class="row collapse prefix-radius">
+            <div class="small-8 columns inline">
+              <label for="option-{opt.name}" class="right inline">{{opt.name}}&nbsp;&nbsp;</label>
+            </div>
+            <div class="small-4 columns">
+              <input id="option-{opt.name}" ng-change="updateOptions()" type="number" ng-model="opt.value"/>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
