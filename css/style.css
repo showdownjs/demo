@@ -113,6 +113,8 @@ h3 {
     overflow-y: auto;
     height: 100%;
     padding-top: 10px;
+    padding-bottom: 50px;
+    padding-right: 10px;
     font-size: 0.9em;
 }
 

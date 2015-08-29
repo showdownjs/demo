@@ -42,17 +42,13 @@
       <div class="title">Options</div>
       <div class="lateral-menu-content-inner">
         <div ng-repeat="opt in checkOpts">
-          <input ng-click="updateOptions()" type="checkbox" ng-model="opt.value" />&nbsp;&nbsp;{{opt.name}}<br />
+          <input id="checkOpt-{{$id}}" ng-click="updateOptions()" type="checkbox" ng-model="opt.value" />
+          <label for="checkOpt-{{$id}}" class="inline">{{opt.name}}</label>
         </div>
+        <hr>
         <div ng-repeat="opt in valOpts">
-          <div class="row collapse prefix-radius">
-            <div class="small-8 columns inline">
-              <label for="option-{opt.name}" class="right inline">{{opt.name}}&nbsp;&nbsp;</label>
-            </div>
-            <div class="small-4 columns">
-              <input id="option-{opt.name}" ng-change="updateOptions()" type="number" ng-model="opt.value"/>
-            </div>
-          </div>
+          <label for="option-{opt.name}">{{opt.name}}</label>
+          <input id="option-{opt.name}" ng-change="updateOptions()" type="number" ng-model="opt.value"/>
         </div>
       </div>
     </div>
@@ -70,10 +66,10 @@
   <div ng-hide="!showModal" class="modal-wrapper ng-hide">
     <div class="modal-inner" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
       <div class="modal-topbar">
-        <a class="modal-close-btn" aria-label="Close" ng-click="showModal = false"><i class="fa fa-lg fa-close"></i></a>
+        <span><i>&nbsp;&nbsp;Limited to 1000 characters</i></span><a class="modal-close-btn" aria-label="Close" ng-click="showModal = false"><i class="fa fa-lg fa-close"></i></a>
       </div>
       <div class="link-area">
-        <textarea disabled style="resize: none;">{{hashTxt}}</textarea>
+        <textarea id="dlnk" style="resize: none;">{{hashTxt}}</textarea>
       </div>
     </div>
   </div>
