@@ -70,6 +70,13 @@ app.controller('editorCtrl', ['$scope', '$showdown', '$http', '$sanitize', funct
     }
 
     for ( i = 0; i < $scope.valOpts.length; ++i) {
+      if ($scope.valOpts[i].name === 'headerLevelStart') {
+        if (isNaN($scope.valOpts[i].value) || $scope.valOpts[i].value < 1) {
+          $scope.valOpts[i].value = 1;
+        } else if ($scope.valOpts[i].value > 6) {
+          $scope.valOpts[i].value = 6;
+        }
+      }
       $showdown.setOption($scope.valOpts[i].name, $scope.valOpts[i].value);
     }
 
