@@ -89,6 +89,10 @@ h3 {
     font-family: 'Open Sans', 'Myriad Pro', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
 }
 
+.lateral-menu label {
+    color: rgb(144, 144, 144);
+}
+
 .lateral-menu-content {
     padding-left: 10px;
     height: 100%;
@@ -109,6 +113,8 @@ h3 {
     overflow-y: auto;
     height: 100%;
     padding-top: 10px;
+    padding-bottom: 50px;
+    padding-right: 10px;
     font-size: 0.9em;
 }
 
