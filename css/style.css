@@ -229,3 +229,7 @@ pre code {
     padding: 0;
 }
 
+.version {
+    color: white;
+    font-size: 0.8em !important;
+}

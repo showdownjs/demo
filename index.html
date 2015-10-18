@@ -28,8 +28,27 @@
   <meta name="msapplication-TileImage" content="img/mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
 
+  <!-- conditional load of showdown's version based on the cookie -->
+  <script>
+    (function() {
+      function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+      }
+
+      var ver = getCookie('version') || 'develop',
+          url = 'https://rawgit.com/showdownjs/showdown/' + ver + '/dist/showdown.min.js',
+          scrp = document.createElement('script');
+
+      scrp.setAttribute("type","text/javascript");
+      scrp.src = url;
+      document.getElementsByTagName("head")[0].appendChild(scrp);
+    })();
+  </script>
+
 </head>
-<body ng-app="showdown.editor" ng-controller="editorCtrl" squeeze>
+<body ng-controller="editorCtrl" squeeze>
 
   <nav class="top-bar" data-topbar role="navigation" ng-include="'partials/nav.html'"></nav>
 
@@ -41,6 +60,7 @@
     <div class="lateral-menu-content">
       <div class="title">Options</div>
       <div class="lateral-menu-content-inner">
+
         <div ng-repeat="opt in checkOpts">
           <input id="checkOpt-{{$id}}" ng-click="updateOptions()" type="checkbox" ng-model="opt.value" />
           <label for="checkOpt-{{$id}}" class="inline">{{opt.name}}</label>
@@ -50,19 +70,15 @@
           <label for="option-{opt.name}">{{opt.name}}</label>
           <input id="option-{opt.name}" ng-change="updateOptions()" type="number" ng-model="opt.value"/>
         </div>
+        <div>
+          <label for="showdownVersion">Showdown Version</label>
+          <select id="showdownVersion" ng-model="version" ng-options="v for v in versions" ng-change="loadVersion()"></select>
+        </div>
       </div>
     </div>
   </div>
-<script src="//rawgit.com/showdownjs/showdown/master/dist/showdown.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-sanitize.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.js"></script>
-<script src="//rawgit.com/showdownjs/ng-showdown/master/dist/ng-showdown.js"></script>
-<script src="//cdn.rawgit.com/dpiccone/ng-pageslide/v1.0.4/dist/angular-pageslide-directive.js"></script>
-<script src="js/editor.js"></script>
 
-<!-- modal -->
+  <!-- modal -->
   <div ng-hide="!showModal" class="modal-wrapper ng-hide">
     <div class="modal-inner" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
       <div class="modal-topbar">
@@ -73,7 +89,16 @@
       </div>
     </div>
   </div>
-<!-- end modal -->
+  <!-- end modal -->
 
+  <script src="js/semver.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-sanitize.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-cookies.js"></script>
+  <script src="//cdn.rawgit.com/dpiccone/ng-pageslide/v1.0.4/dist/angular-pageslide-directive.js"></script>
+
+  <script src="js/editor.js"></script>
 </body>
 </html>
