@@ -195,7 +195,7 @@ this will produce this:
 
 Colons can be used to align columns.
 
-The outer pipes (|) are optional, and you don't need to make the raw Markdown line up prettily. You can also use inline Markdown.
+The outer pipes (|) are **NOT** optional. But you don't need to make the raw Markdown line up prettily.
 
 You can also use other markdown syntax inside them.
 
