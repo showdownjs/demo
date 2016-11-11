@@ -36,3 +36,5 @@ You can also use one of several CDNs available:
 [setext]: https://en.wikipedia.org/wiki/Setext
 
 ---------
+
+# Syntax
