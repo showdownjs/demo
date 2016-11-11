@@ -235,7 +235,8 @@ window.onload = function () {
     $scope.firstLoad = true;
     $scope.text = '';
 
-    $scope.checkOpts = $cookies.getObject('checkOpts') || [
+		var savedCheckOpts = $cookies.getObject('checkOpts') || [];
+    $scope.checkOpts = [
         {name: 'omitExtraWLInCodeBlocks', value: true},
         {name: 'noHeaderId', value: false},
         {name: 'parseImgDimensions', value: true},
@@ -247,9 +248,19 @@ window.onload = function () {
         {name: 'ghCodeBlocks', value: true},
         {name: 'tasklists', value: true},
         {name: 'smoothLivePreview', value: true},
-        {name: 'prefixHeaderId', value: false}
+        {name: 'prefixHeaderId', value: false},
+        {name: 'disableForced4SpacesIndentedSublists', value: false}
       ];
-
+			
+		for (var i = 0; i < $scope.checkOpts.length; ++i) {
+			for (var ii = 0; ii < savedCheckOpts.length; ++ii) {
+				if ($scope.checkOpts[i].name === savedCheckOpts[ii].name) {
+					$scope.checkOpts[i].value = savedCheckOpts[ii].value;
+					break;
+				}
+			}
+		}
+			
     $scope.valOpts = $cookies.getObject('valOpts') || [
         {name: 'headerLevelStart', value: 3}
       ];
