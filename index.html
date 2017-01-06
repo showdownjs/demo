@@ -66,9 +66,13 @@
           <label for="checkOpt-{{$id}}" class="inline">{{opt.name}}</label>
         </div>
         <hr>
-        <div ng-repeat="opt in valOpts">
+        <div ng-repeat="opt in numOpts">
           <label for="option-{opt.name}">{{opt.name}}</label>
           <input id="option-{opt.name}" ng-change="updateOptions()" type="number" ng-model="opt.value"/>
+        </div>
+        <div ng-repeat="opt in textOpts">
+          <label for="option-{opt.name}">{{opt.name}}</label>
+          <input id="textOption-{opt.name}" data-ng-change="updateOptions()" type="text" ng-model="opt.value"/>
         </div>
         <div>
           <label for="showdownVersion">Showdown Version</label>

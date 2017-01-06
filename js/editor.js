@@ -116,6 +116,20 @@ window.onload = function () {
             converter.setOption(key, value);
             return this;
           };
+
+          /**
+           * Get showdown's default options
+           *
+           * @param simple
+           */
+          this.getDefaultOptions = function(simple) {
+            if (typeof showdown.getDefaultOptions !== 'undefined') {
+              return showdown.getDefaultOptions(simple);
+            } else {
+              return null;
+            }
+
+          }
         }
 
         // The object returned by service provider
@@ -234,36 +248,108 @@ window.onload = function () {
     $scope.checked = false;
     $scope.firstLoad = true;
     $scope.text = '';
+    $scope.checkOpts = [];
+    $scope.numOpts = [];
+    $scope.textOpts = [];
 
-		var savedCheckOpts = $cookies.getObject('checkOpts') || [];
-    $scope.checkOpts = [
-        {name: 'omitExtraWLInCodeBlocks', value: true},
-        {name: 'noHeaderId', value: false},
-        {name: 'parseImgDimensions', value: true},
-        {name: 'simplifiedAutoLink', value: true},
-        {name: 'literalMidWordUnderscores', value: true},
-        {name: 'strikethrough', value: true},
-        {name: 'tables', value: true},
-        {name: 'tablesHeaderId', value: false},
-        {name: 'ghCodeBlocks', value: true},
-        {name: 'tasklists', value: true},
-        {name: 'smoothLivePreview', value: true},
-        {name: 'prefixHeaderId', value: false},
-        {name: 'disableForced4SpacesIndentedSublists', value: false}
-      ];
-			
-		for (var i = 0; i < $scope.checkOpts.length; ++i) {
-			for (var ii = 0; ii < savedCheckOpts.length; ++ii) {
-				if ($scope.checkOpts[i].name === savedCheckOpts[ii].name) {
-					$scope.checkOpts[i].value = savedCheckOpts[ii].value;
-					break;
-				}
+    var savedCheckOpts = $cookies.getObject('checkOpts') || [];
+    var savedNumOpts = $cookies.getObject('numOpts') || [];
+    var savedTextOpts = $cookies.getObject('textOpts') || [];
+    var defaultOpts = $showdown.getDefaultOptions(false);
+    var checkOpts = {
+      'omitExtraWLInCodeBlocks': true,
+      'noHeaderId': false,
+      'parseImgDimensions': true,
+      'simplifiedAutoLink': true,
+      'literalMidWordUnderscores': true,
+      'strikethrough': true,
+      'tables': true,
+      'tablesHeaderId': false,
+      'ghCodeBlocks': true,
+      'tasklists': true,
+      'smoothLivePreview': true,
+      'prefixHeaderId': false,
+      'disableForced4SpacesIndentedSublists': false,
+      'ghCompatibleHeaderId': true,
+      'smartIndentationFix': false
+    };
+    var numOpts = {
+      'headerLevelStart': 3
+    };
+    var textOpts = {};
+
+    if (defaultOpts !== null) {
+      for (var opt in defaultOpts) {
+        if (defaultOpts.hasOwnProperty(opt)) {
+          var nOpt = (defaultOpts[opt].hasOwnProperty('defaultValue')) ? defaultOpts[opt].defaultValue : true;
+          if (defaultOpts[opt].type === 'boolean') {
+            if (!checkOpts.hasOwnProperty(opt)) {
+              checkOpts[opt] = nOpt;
+            }
+          } else if (defaultOpts[opt].type === 'integer') {
+            if (!numOpts.hasOwnProperty(opt)) {
+              numOpts[opt] = nOpt;
+            }
+          } else {
+            if (!textOpts.hasOwnProperty(opt)) {
+              // fix bug in showdown's older version that specifies 'ghCompatibleHeaderId' as a string instead of boolean
+              if (opt === 'ghCompatibleHeaderId') {
+                continue;
+              }
+              if (!nOpt) {
+                nOpt = '';
+              }
+              textOpts[opt] = nOpt;
+            }
+          }
+        }
+      }
+    }
+
+    for (opt in checkOpts) {
+      if (checkOpts.hasOwnProperty(opt)) {
+        $scope.checkOpts.push({name: opt, value: checkOpts[opt]});
+      }
+    }
+
+    for (opt in numOpts) {
+      if (numOpts.hasOwnProperty(opt)) {
+        $scope.numOpts.push({name: opt, value: numOpts[opt]});
+      }
+    }
+
+    for (opt in textOpts) {
+      if (textOpts.hasOwnProperty(opt)) {
+        $scope.textOpts.push({name: opt, value: textOpts[opt]});
+      }
+    }
+
+    for (var i = 0; i < $scope.checkOpts.length; ++i) {
+		for (var ii = 0; ii < savedCheckOpts.length; ++ii) {
+			if ($scope.checkOpts[i].name === savedCheckOpts[ii].name) {
+				$scope.checkOpts[i].value = savedCheckOpts[ii].value;
+				break;
 			}
 		}
-			
-    $scope.valOpts = $cookies.getObject('valOpts') || [
-        {name: 'headerLevelStart', value: 3}
-      ];
+	}
+
+    for (i = 0; i < $scope.numOpts.length; ++i) {
+      for (ii = 0; ii < savedNumOpts.length; ++ii) {
+        if ($scope.numOpts[i].name === savedNumOpts[ii].name) {
+          $scope.numOpts[i].value = savedNumOpts[ii].value;
+          break;
+        }
+      }
+    }
+
+    for (i = 0; i < $scope.textOpts.length; ++i) {
+      for (ii = 0; ii < savedTextOpts.length; ++ii) {
+        if ($scope.textOpts[i].name === savedTextOpts[ii].name) {
+          $scope.textOpts[i].value = savedTextOpts[ii].value;
+          break;
+        }
+      }
+    }
 
     $scope.toggleMenu = function () {
       $scope.firstLoad = false;
@@ -290,15 +376,19 @@ window.onload = function () {
         $showdown.setOption($scope.checkOpts[i].name, $scope.checkOpts[i].value);
       }
 
-      for (i = 0; i < $scope.valOpts.length; ++i) {
-        if ($scope.valOpts[i].name === 'headerLevelStart') {
-          if (isNaN($scope.valOpts[i].value) || $scope.valOpts[i].value < 1) {
-            $scope.valOpts[i].value = 1;
-          } else if ($scope.valOpts[i].value > 6) {
-            $scope.valOpts[i].value = 6;
+      for (i = 0; i < $scope.numOpts.length; ++i) {
+        if ($scope.numOpts[i].name === 'headerLevelStart') {
+          if (isNaN($scope.numOpts[i].value) || $scope.numOpts[i].value < 1) {
+            $scope.numOpts[i].value = 1;
+          } else if ($scope.numOpts[i].value > 6) {
+            $scope.numOpts[i].value = 6;
           }
         }
-        $showdown.setOption($scope.valOpts[i].name, $scope.valOpts[i].value);
+        $showdown.setOption($scope.numOpts[i].name, $scope.numOpts[i].value);
+      }
+
+      for (i = 0; i < $scope.textOpts.length; ++i) {
+        $showdown.setOption($scope.textOpts[i].name, $scope.textOpts[i].value);
       }
 
       // trigger text repaint (hackish way)
@@ -311,7 +401,8 @@ window.onload = function () {
 
       hack = !hack;
       $cookies.putObject('checkOpts', $scope.checkOpts);
-      $cookies.putObject('valOpts', $scope.valOpts);
+      $cookies.putObject('numOpts', $scope.numOpts);
+      $cookies.putObject('textOpts', $scope.textOpts);
     };
 
     //load available versions
