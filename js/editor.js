@@ -239,19 +239,18 @@ window.onload = function () {
 
   app.controller('editorCtrl', ['$scope', '$showdown', '$http', '$cookies', function ($scope, $showdown, $http, $cookies) {
 
-    var hack = true;
-
     $scope.versions = ['develop', 'master'];
     $scope.version = $cookies.get('version') || 'develop';
     $scope.showModal = false;
     $scope.hashTxt = '';
-    $scope.checked = false;
+    $scope.checked = true;
     $scope.firstLoad = true;
     $scope.text = '';
     $scope.checkOpts = [];
     $scope.numOpts = [];
     $scope.textOpts = [];
 
+    var text = '';
     var savedCheckOpts = $cookies.getObject('checkOpts') || [];
     var savedNumOpts = $cookies.getObject('numOpts') || [];
     var savedTextOpts = $cookies.getObject('textOpts') || [];
@@ -391,18 +390,15 @@ window.onload = function () {
         $showdown.setOption($scope.textOpts[i].name, $scope.textOpts[i].value);
       }
 
-      // trigger text repaint (hackish way)
-      $scope.text = $scope.text.replace(/\u200B/, '');
-      if (hack) {
-        $scope.text = '\u200B' + $scope.text;
-      } else {
-        $scope.text = $scope.text + '\u200B';
-      }
-
-      hack = !hack;
       $cookies.putObject('checkOpts', $scope.checkOpts);
       $cookies.putObject('numOpts', $scope.numOpts);
       $cookies.putObject('textOpts', $scope.textOpts);
+    };
+
+    $scope.repaint = function () {
+      sessionStorage.setItem("text", $scope.text);
+      console.log($cookies.getAll()); // this is to force cookies to update
+      location.reload();
     };
 
     //load available versions
@@ -420,7 +416,7 @@ window.onload = function () {
       }
     );
 
-    $scope.updateOptions();
+    $scope.updateOptions(false);
 
     // get text from URL or load the default text
     if (window.location.hash) {
