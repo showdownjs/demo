@@ -428,19 +428,17 @@ window.onload = function () {
     } else {
       $http.get('md/text.md')
         .success(function (data) {
-					$scope.text = data;
-					$http.get('//raw.githubusercontent.com/wiki/showdownjs/showdown/Showdown\'s-Markdown-syntax.md')
-						.success(function (data2) {
-							$scope.text = $scope.text + '\n\n' + data2;
-						});
-        })
-        .error(function () {
-          $scope.text = '';
+          $scope.text = data;
+          $http.get('//raw.githubusercontent.com/wiki/showdownjs/showdown/Showdown\'s-Markdown-syntax.md')
+               .success(function (data2) {
+          $scope.text = $scope.text + '\n\n' + data2;
         });
+      })
+      .error(function () {
+        $scope.text = '';
+      });
     }
-
   }]);
-
 
   angular.bootstrap(document, ['showdown.editor']);
 };
