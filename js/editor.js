@@ -189,7 +189,9 @@ window.onload = function () {
             var showdownHTML;
             if (typeof newValue === 'string') {
               showdownHTML = $showdown.makeHtml(newValue);
-              scope.trustedHtml = ($showdown.getOption('sanitize')) ? $sanitize(showdownHTML) : $sce.trustAsHtml(showdownHTML);
+              //scope.trustedHtml = ($showdown.getOption('sanitize')) ? $sanitize(showdownHTML) : $sce.trustAsHtml(showdownHTML);
+              scope.trustedHtml = showdownHTML;
+              
             } else {
               scope.trustedHtml = typeof newValue;
             }
@@ -216,34 +218,16 @@ window.onload = function () {
   }
 
 
-  var app = angular.module('showdown.editor', ['ng-showdown', 'pageslide-directive', 'ngAnimate', 'ngRoute', 'ngCookies']);
+  var app = angular.module('showdown.editor', ['ng-showdown', 'pageslide-directive', 'ngAnimate', 'ngRoute', 'ngCookies', 'ngSanitize']);
 
-  app.directive('squeeze', ['$animate', function ($animate) {
-    return {
-      link: function (scope, element, attrs) {
-        scope.$watch('checked', function (newValue) {
-          if (!scope.firstLoad) {
-            if (newValue) {
-              $animate.addClass(element, 'squeezed-body');
-              element.removeClass('full-body');
-            } else {
-              $animate.addClass(element, 'full-body');
-              element.removeClass('squeezed-body');
-            }
-          }
-        });
-      }
-    };
-  }]);
-
-
-  app.controller('editorCtrl', ['$scope', '$showdown', '$http', '$cookies', function ($scope, $showdown, $http, $cookies) {
+  
+  app.controller('editorCtrl', ['$scope', '$showdown', '$http', '$cookies', '$sanitize', function ($scope, $showdown, $http, $cookies, $sanitize) {
 
     $scope.versions = ['develop', 'master'];
     $scope.version = $cookies.get('version') || 'develop';
     $scope.showModal = false;
     $scope.hashTxt = '';
-    $scope.checked = true;
+    $scope.checked = false;
     $scope.firstLoad = true;
     $scope.text = '';
     $scope.checkOpts = [];
@@ -356,7 +340,7 @@ window.onload = function () {
     };
 
     $scope.getHash = function () {
-      $scope.hashTxt = document.location.origin + document.location.pathname + '#/' + encodeURIComponent($scope.text);
+      $scope.hashTxt = document.location.origin + document.location.pathname + '#!/' + encodeURIComponent($scope.text);
       $scope.showModal = true;
     };
 
@@ -420,25 +404,27 @@ window.onload = function () {
 
     // get text from URL or load the default text
     if (window.location.hash) {
-      var hashText = window.location.hash.replace(/^#(\/)?/, '');
+      var hashText = window.location.hash.replace(/^#!(\/)?/, '');
+      console.log(window.location.hash, hashText);
       hashText = decodeURIComponent(hashText);
       $scope.text = hashText;
     } else if (sessionStorage.getItem('text')) {
       $scope.text = sessionStorage.getItem('text');
     } else {
-      $http.get('md/text.md')
-        .success(function (data) {
-					$scope.text = data;
-					$http.get('//raw.githubusercontent.com/wiki/showdownjs/showdown/Showdown\'s-Markdown-syntax.md')
-						.success(function (data2) {
-							$scope.text = $scope.text + '\n\n' + data2;
-						});
+      var defHtml = $http.get('md/text.md');
+      defHtml
+        .then(function(res) {
+          $scope.text = res.data;
+          return $http.get('//raw.githubusercontent.com/wiki/showdownjs/showdown/Showdown\'s-Markdown-syntax.md');
         })
-        .error(function () {
+        .then(function(res) {
+          $scope.text = $scope.text + '\n\n' + res.data;
+        })
+        .catch(function (error) {
           $scope.text = '';
+          console.log(error);
         });
     }
-
   }]);
 
 

@@ -30,18 +30,6 @@ html {
     to { width: 100%; }
 }
 
-.squeezed-body {
-    animation: squeezeBody 0.5s ease;
-    -webkit-animation: squeezeBody 0.5s ease;
-    width: calc(100% - 300px);
-}
-
-.full-body {
-    animation: stretchBody 0.5s ease;
-    -webkit-animation: stretchBody 0.5s ease;
-    width: 100%;
-}
-
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Old Standard TT', serif;
     font-weight: bold;
