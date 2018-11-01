@@ -424,9 +424,8 @@ window.onload = function () {
           $scope.text = '';
           console.log(error);
         });
-    }
+      }
   }]);
-
 
   angular.bootstrap(document, ['showdown.editor']);
 };
